@@ -96,11 +96,13 @@ classdef compactMat
                 hasDuplicates = size(u,1) < size(e,1);
                 if hasDuplicates
                     error('The call contained multiple elements to be added at the same coordinates. Only one element for the same set of coordinates is allowed in one call. \n')
-                end          
+                end
+            
 
                 if any(isa(e, 'sym'))
                     warning('This object contains sym data.')
                 end
+
     
                 cM = M.Data;
                 if ~isempty(cM)
@@ -307,7 +309,7 @@ classdef compactMat
         %% compactElementWise
        
 
-        function S = compactElementwise(op, M, Ms)
+        function S = compactElementwise(M, Ms, op)
 
         %Gives the result of an element-wise operation between two matrices
         %represented as compactMat objects. The matrices must have the same
@@ -330,16 +332,13 @@ classdef compactMat
                     cM(index_M, :) = [];
                     cMs(index_Ms, :) = [];
                     S = compactInsert(0, S, cat(1, cM, cMs));
-
                 case 'sub' 
                     S = compactInsert(0, S, cat(2, cM(index_M, 1) - cMs(index_Ms, 1), cM(index_M, 2:end)));
                     cM(index_M, :) = [];
                     cMs(index_Ms, :) = [];
                     S = compactInsert(0, S, cat(1, cM, cMs));
-
                 case 'mul' 
                     S = compactInsert(0, S, cat(2, cM(index_M, 1) .* cMs(index_Ms, 1), cM(index_M, 2:end)));
-
                 case 'div' 
                     S = compactInsert(0, S, cat(2, cM(index_M, 1) ./ cMs(index_Ms, 1), cM(index_M, 2:end)));
 
@@ -382,8 +381,6 @@ classdef compactMat
                     P = compactInsert('list', P, [sum(nonZero(:, 1)), uniqueRows(r), uniqueCols(c)]);
                 end
             end
-
-
             end
         end
 end
